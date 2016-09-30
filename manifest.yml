@@ -6,7 +6,7 @@ applications:
   stackato:
     env:
       GOVERSION:
-        default: 1.4.3
+        default: 1.5
     ignores:
     - .git
     - bin
