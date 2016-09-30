@@ -3,4 +3,7 @@ all:	bin/go-env
 	foreman start -p 5050
 
 bin/go-env:
-	GOBIN=bin go install
+	GOBIN=${PWD}/bin CGO_ENABLED=0 go install -ldflags '-w -s' -installsuffix 'no-cgo'
+
+docker: Dockerfile bin/go-env
+	docker build -t mookas/go-env .
