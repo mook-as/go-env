@@ -33,8 +33,6 @@ func main() {
 
 // envHandler prints out the environment seen by the backend/application/this process
 func envHandler(w http.ResponseWriter, req *http.Request) {
-	fmt.Printf("\n%+v\n\n", req)
-	fmt.Fprintf(w,"\n%+v\n\n", req)
 	fmt.Fprintln(w, strings.Join(os.Environ(), "\n"))
 }
 
