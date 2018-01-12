@@ -1,5 +1,5 @@
 {
 	"ImportPath": "github.com/hpcloud/go-env",
-	"GoVersion": "go1.5",
+	"GoVersion": "go1.7",
 	"Deps": []
 }
