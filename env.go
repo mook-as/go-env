@@ -91,7 +91,7 @@ func consumeMemoryHandler(w http.ResponseWriter, req *http.Request) {
 			fmt.Fprintf(w, "%s\n", getMemStats())
 			flusher.Flush()
 		}
-		buf = append(buf, make([]byte, 1024*1024))
+		buf = append(buf, bytes.Repeat([]byte{byte(i)}, 1024*1024))
 	}
 
 	fmt.Fprintf(w, "Consumption complete\n")
