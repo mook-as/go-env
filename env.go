@@ -4,8 +4,8 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"runtime"
@@ -26,6 +26,7 @@ func main() {
 	http.HandleFunc("/memory/consume", consumeMemoryHandler)
 	http.HandleFunc("/memory/release", releaseMemoryHandler)
 	http.HandleFunc("/memory", memoryStatsHandler)
+	http.HandleFunc("/stdout", stdoutHandler)
 	addr := ":" + os.Getenv("PORT")
 	fmt.Printf("Listening on %v\n", addr)
 	log.Fatal(http.ListenAndServe(addr, nil))
@@ -54,6 +55,12 @@ func echoHandler(ws *websocket.Conn) {
 	fmt.Printf("ECHO websock\n")
 	io.Copy(ws, ws)
 	fmt.Printf("OHCE websock\n")
+}
+
+func stdoutHandler(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(os.Stdout, "Message on stdout")
+	fmt.Fprintln(os.Stderr, "Message on stderr")
+	fmt.Fprintln(w, "Message written")
 }
 
 type memorySize struct {
