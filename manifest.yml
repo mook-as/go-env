@@ -2,10 +2,5 @@ applications:
 - name: go-env
   memory: 32M
   disk_quota: 100M
-  stackato:
-    env:
-      GOVERSION:
-        default: 1.7
-    ignores:
-    - .git
-    - bin
+  env:
+    GOPACKAGENAME: go-env
