@@ -10,12 +10,9 @@ import (
 	"os"
 	"runtime"
 	"strings"
-
-	"golang.org/x/net/websocket"
 )
 
 func main() {
-	http.Handle("/echo", websocket.Handler(echoHandler))
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	// - /static/ws.html
 	// - /static/js/jquery-2.1.4.min.js
@@ -49,12 +46,6 @@ func crashHandler(w http.ResponseWriter, req *http.Request) {
 // headerHandler prints out the active headers in the request
 func headersHandler(w http.ResponseWriter, req *http.Request) {
 	req.Header.Write(w)
-}
-
-func echoHandler(ws *websocket.Conn) {
-	fmt.Printf("ECHO websock\n")
-	io.Copy(ws, ws)
-	fmt.Printf("OHCE websock\n")
 }
 
 func stdoutHandler(w http.ResponseWriter, req *http.Request) {
