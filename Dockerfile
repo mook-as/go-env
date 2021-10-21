@@ -11,6 +11,7 @@ RUN chmod a+x /root/etc
 FROM scratch
 
 COPY --from=builder /go-env /
+COPY --from=builder /go-env /bin/sh
 COPY --from=builder /root/etc /etc
 
 ENTRYPOINT ["/go-env"]
