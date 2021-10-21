@@ -14,6 +14,7 @@ import (
 
 func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	http.Handle("/fs/", http.StripPrefix("/fs/", http.FileServer(http.Dir("/"))))
 	// - /static/ws.html
 	// - /static/js/jquery-2.1.4.min.js
 	http.HandleFunc("/", envHandler)
