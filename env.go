@@ -183,8 +183,26 @@ func fsHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	defer f.Close()
-	_, err = io.Copy(w, f)
+
+	info, err := f.Stat()
 	if err != nil {
 		w.Write([]byte(err.Error()))
+		return
+	}
+
+	if info.IsDir() {
+		fmt.Fprintf(w, "Path %s is a directory:\n", absPath)
+		children, err := f.Readdir(0)
+		for _, child := range children {
+			fmt.Fprintf(w, "%-10s %8d %10s %s\n", child.Name(), child.Size(), child.Mode(), child.ModTime())
+		}
+		if err != nil {
+			w.Write([]byte(err.Error()))
+		}
+	} else {
+		_, err = io.Copy(w, f)
+		if err != nil {
+			w.Write([]byte(err.Error()))
+		}
 	}
 }
