@@ -10,6 +10,7 @@ import (
 	"os"
 	"path"
 	"runtime"
+	"sort"
 	"strings"
 )
 
@@ -193,6 +194,9 @@ func fsHandler(w http.ResponseWriter, req *http.Request) {
 	if info.IsDir() {
 		fmt.Fprintf(w, "Path %s is a directory:\n", absPath)
 		children, err := f.Readdir(0)
+		sort.SliceStable(children, func(i, j int) bool {
+			return children[i].Name() < children[j].Name()
+		})
 		for _, child := range children {
 			fmt.Fprintf(w, "%-10s %8d %10s %s\n", child.Name(), child.Size(), child.Mode(), child.ModTime())
 		}
