@@ -8,15 +8,16 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"runtime"
 	"strings"
 )
 
 func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.Handle("/fs/", http.StripPrefix("/fs/", http.FileServer(http.Dir("/"))))
 	// - /static/ws.html
 	// - /static/js/jquery-2.1.4.min.js
+	http.Handle("/fs/", http.StripPrefix("/fs/", http.HandlerFunc(fsHandler)))
 	http.HandleFunc("/", envHandler)
 	http.HandleFunc("/body", bodyHandler)
 	http.HandleFunc("/crash", crashHandler)
@@ -170,5 +171,20 @@ func bodyHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	if flusher, ok := w.(http.Flusher); ok {
 		flusher.Flush()
+	}
+}
+
+func fsHandler(w http.ResponseWriter, req *http.Request) {
+	absPath := path.Join("/", req.URL.Path)
+	f, err := os.Open(absPath)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	defer f.Close()
+	_, err = io.Copy(w, f)
+	if err != nil {
+		w.Write([]byte(err.Error()))
 	}
 }
