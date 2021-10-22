@@ -198,7 +198,17 @@ func fsHandler(w http.ResponseWriter, req *http.Request) {
 			return children[i].Name() < children[j].Name()
 		})
 		for _, child := range children {
-			fmt.Fprintf(w, "%-10s %8d %10s %s\n", child.Name(), child.Size(), child.Mode(), child.ModTime())
+			line := fmt.Sprintf("%-10s %8d %10s %s", child.Name(), child.Size(), child.Mode(), child.ModTime())
+			if child.Mode() & os.ModeSymlink != 0 {
+				target, e := os.Readlink(path.Join(absPath, child.Name()))
+				if e != nil {
+					fmt.Fprintf(w, "%s <error reading link: %s>\n", line, err)
+				} else {
+					fmt.Fprintf(w, "%s -> %s\n", line, target)
+				}
+			} else {
+				fmt.Fprintln(w, line)
+			}
 		}
 		if err != nil {
 			w.Write([]byte(err.Error()))
